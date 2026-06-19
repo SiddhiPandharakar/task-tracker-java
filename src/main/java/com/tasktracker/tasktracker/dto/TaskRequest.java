@@ -5,7 +5,7 @@ package com.tasktracker.tasktracker.dto;
 import com.tasktracker.tasktracker.entity.TaskStatus;
 
 import jakarta.validation.constraints.NotBlank;
-
+import jakarta.validation.constraints.NotNull;
 
 
 import java.time.LocalDate;
@@ -33,6 +33,7 @@ public class TaskRequest {
 
 
 
+    @NotNull(message = "Owner id is required")
     private Long ownerId;
 
 

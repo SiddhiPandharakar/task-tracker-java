@@ -78,35 +78,14 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
 
 
             String jsonLog = String.format(
-
-                    """
-                    {
-                      "timestamp":"%s",
-                      "level":"INFO",
-                      "message":"HTTP Request Completed",
-                      "request_id":"%s",
-                      "method":"%s",
-                      "path":"%s",
-                      "status":%d,
-                      "duration_ms":%d
-                    }
-                    """,
-
+                    "{\"timestamp\":\"%s\",\"level\":\"INFO\",\"message\":\"HTTP Request Completed\",\"request_id\":\"%s\",\"method\":\"%s\",\"path\":\"%s\",\"status\":%d,\"duration_ms\":%d}",
                     LocalDateTime.now(),
-
                     requestId,
-
                     request.getMethod(),
-
                     request.getRequestURI(),
-
                     response.getStatus(),
-
                     duration
-
             );
-
-
 
             logger.info(jsonLog);
 

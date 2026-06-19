@@ -39,10 +39,10 @@ public class User {
     @OneToMany(
             mappedBy="owner",
             cascade=CascadeType.ALL,
-            orphanRemoval=true
+            orphanRemoval=true,
+            fetch = FetchType.LAZY
     )
     private List<Task> tasks = new ArrayList<>();
-
 
 
 

@@ -100,11 +100,8 @@ public class TaskController {
 
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> updateTask(
-
             @PathVariable Long id,
-
-            @RequestBody TaskRequest request
-
+            @Valid @RequestBody TaskRequest request
     ){
 
         return ResponseEntity.ok(
