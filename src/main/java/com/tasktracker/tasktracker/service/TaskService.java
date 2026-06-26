@@ -241,29 +241,23 @@ public class TaskService {
 
 
 
-
     private TaskResponse mapToResponse(Task task){
 
+        Long ownerId = null;
+
+        if (task.getOwner() != null) {
+            ownerId = task.getOwner().getId();
+        }
 
         return new TaskResponse(
-
                 task.getId(),
-
                 task.getTitle(),
-
                 task.getDescription(),
-
                 task.getDueDate(),
-
                 task.getStatus(),
-
                 task.getCreatedAt(),
-
-                task.getOwner().getId()
-
+                ownerId
         );
-
     }
-
 
 }

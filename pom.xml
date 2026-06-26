@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 
     <modelVersion>4.0.0</modelVersion>
 
 
     <parent>
-
         <groupId>org.springframework.boot</groupId>
-
         <artifactId>spring-boot-starter-parent</artifactId>
-
-        <version>3.5.5</version>
-
+        <version>3.5.15</version>
         <relativePath/>
-
     </parent>
 
 
-
     <groupId>com.tasktracker</groupId>
-
     <artifactId>tasktracker</artifactId>
-
     <version>0.0.1-SNAPSHOT</version>
 
 
     <name>tasktracker</name>
-
-    <description>TaskTracker Spring Boot REST API</description>
+    <description>Secure TaskTracker REST API</description>
 
 
     <properties>
 
         <java.version>21</java.version>
+
+        <maven.compiler.release>21</maven.compiler.release>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+
+        <!-- Security fixes -->
+        <commons-lang3.version>3.18.0</commons-lang3.version>
+
 
     </properties>
 
@@ -45,23 +49,17 @@
         <!-- REST API -->
 
         <dependency>
-
             <groupId>org.springframework.boot</groupId>
-
             <artifactId>spring-boot-starter-web</artifactId>
-
         </dependency>
 
 
 
-        <!-- JPA Database -->
+        <!-- JPA -->
 
         <dependency>
-
             <groupId>org.springframework.boot</groupId>
-
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-
         </dependency>
 
 
@@ -69,11 +67,8 @@
         <!-- Validation -->
 
         <dependency>
-
             <groupId>org.springframework.boot</groupId>
-
             <artifactId>spring-boot-starter-validation</artifactId>
-
         </dependency>
 
 
@@ -81,25 +76,18 @@
         <!-- PostgreSQL -->
 
         <dependency>
-
             <groupId>org.postgresql</groupId>
-
             <artifactId>postgresql</artifactId>
-
             <scope>runtime</scope>
-
         </dependency>
 
 
 
-        <!-- Actuator Health/Metrics -->
+        <!-- Actuator -->
 
         <dependency>
-
             <groupId>org.springframework.boot</groupId>
-
             <artifactId>spring-boot-starter-actuator</artifactId>
-
         </dependency>
 
 
@@ -107,13 +95,9 @@
         <!-- Swagger OpenAPI -->
 
         <dependency>
-
             <groupId>org.springdoc</groupId>
-
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-
             <version>2.8.13</version>
-
         </dependency>
 
 
@@ -121,20 +105,14 @@
         <!-- Flyway -->
 
         <dependency>
-
             <groupId>org.flywaydb</groupId>
-
             <artifactId>flyway-core</artifactId>
-
         </dependency>
 
 
         <dependency>
-
             <groupId>org.flywaydb</groupId>
-
             <artifactId>flyway-database-postgresql</artifactId>
-
         </dependency>
 
 
@@ -142,13 +120,9 @@
         <!-- Lombok -->
 
         <dependency>
-
             <groupId>org.projectlombok</groupId>
-
             <artifactId>lombok</artifactId>
-
             <scope>provided</scope>
-
         </dependency>
 
 
@@ -156,13 +130,9 @@
         <!-- Testing -->
 
         <dependency>
-
             <groupId>org.springframework.boot</groupId>
-
             <artifactId>spring-boot-starter-test</artifactId>
-
             <scope>test</scope>
-
         </dependency>
 
 
@@ -171,34 +141,63 @@
 
 
 
-    <build>
 
+    <build>
 
         <plugins>
 
 
 
-            <!-- Spring Boot Run -->
+            <!-- Spring Boot Plugin -->
 
             <plugin>
 
                 <groupId>org.springframework.boot</groupId>
-
                 <artifactId>spring-boot-maven-plugin</artifactId>
+
+
+                <configuration>
+
+                    <layers>
+                        <enabled>true</enabled>
+                    </layers>
+
+                </configuration>
 
             </plugin>
 
 
 
 
-            <!-- Code Coverage -->
+
+            <!-- Java 21 Compiler -->
+
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+
+
+                <configuration>
+
+                    <release>21</release>
+
+                </configuration>
+
+
+            </plugin>
+
+
+
+
+
+
+            <!-- Jacoco -->
 
             <plugin>
 
                 <groupId>org.jacoco</groupId>
-
                 <artifactId>jacoco-maven-plugin</artifactId>
-
                 <version>0.8.12</version>
 
 
@@ -210,9 +209,7 @@
                         <id>prepare-agent</id>
 
                         <goals>
-
                             <goal>prepare-agent</goal>
-
                         </goals>
 
                     </execution>
@@ -221,15 +218,169 @@
 
                     <execution>
 
-                        <id>jacoco-report</id>
+                        <id>jacoco-check</id>
 
                         <phase>verify</phase>
 
                         <goals>
+                            <goal>check</goal>
+                        </goals>
 
-                            <goal>report</goal>
+
+                        <configuration>
+
+                            <rules>
+
+                                <rule>
+
+                                    <element>BUNDLE</element>
+
+
+                                    <limits>
+
+
+                                        <limit>
+
+                                            <counter>INSTRUCTION</counter>
+
+                                            <value>COVEREDRATIO</value>
+
+                                            <minimum>0.80</minimum>
+
+                                        </limit>
+
+
+                                    </limits>
+
+
+                                </rule>
+
+
+                            </rules>
+
+
+                        </configuration>
+
+
+                    </execution>
+
+
+                </executions>
+
+
+            </plugin>
+
+
+
+
+
+
+
+            <!-- OWASP Dependency Check -->
+
+            <plugin>
+
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>12.1.0</version>
+
+
+                <executions>
+
+                    <execution>
+
+                        <id>security-check</id>
+
+                        <phase>verify</phase>
+
+
+                        <goals>
+
+                            <goal>check</goal>
 
                         </goals>
+
+
+                    </execution>
+
+
+                </executions>
+
+
+
+                <configuration>
+
+
+                    <!-- fail only high/critical -->
+
+                    <failBuildOnCVSS>7</failBuildOnCVSS>
+
+
+                    <format>ALL</format>
+
+
+                    <outputDirectory>
+
+                        ${project.build.directory}/security-report
+
+                    </outputDirectory>
+
+
+                </configuration>
+
+
+            </plugin>
+
+
+
+
+
+
+
+
+            <!-- Maven Enforcer -->
+
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+
+                <artifactId>maven-enforcer-plugin</artifactId>
+
+                <version>3.6.1</version>
+
+
+                <executions>
+
+
+                    <execution>
+
+                        <id>enforce-java</id>
+
+
+                        <goals>
+
+                            <goal>enforce</goal>
+
+                        </goals>
+
+
+                        <configuration>
+
+                            <rules>
+
+
+                                <requireJavaVersion>
+
+                                    <version>[21,)</version>
+
+                                </requireJavaVersion>
+
+
+                            </rules>
+
+
+                        </configuration>
+
 
                     </execution>
 

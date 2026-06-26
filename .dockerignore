@@ -1,0 +1,17 @@
+.git
+.github
+.idea
+
+target
+*.log
+
+.env
+.env.*
+
+docker-compose.yml
+
+src/test
+
+*.iml
+
+README.md
