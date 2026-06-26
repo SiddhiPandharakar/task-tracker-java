@@ -14,6 +14,7 @@ on:
 
 
 permissions:
+
   contents: read
 
 
@@ -57,13 +58,15 @@ jobs:
 
         options: >-
 
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U postgres -d tasktracker"
 
           --health-interval 10s
 
           --health-timeout 5s
 
           --health-retries 5
+
+
 
 
 
@@ -81,7 +84,7 @@ jobs:
 
 
 
-      # 1. Checkout code
+      # 1. Checkout source code
 
       - name: Checkout repository
 
@@ -90,7 +93,8 @@ jobs:
 
 
 
-      # 2. Setup Java
+
+      # 2. Setup Java 21
 
       - name: Setup Java 21
 
@@ -107,7 +111,8 @@ jobs:
 
 
 
-      # 3. Verify Java
+
+      # 3. Verify Java installation
 
       - name: Verify Java
 
@@ -116,7 +121,8 @@ jobs:
 
 
 
-      # 4. Build + Test + Coverage
+
+      # 4. Maven build + unit tests + Jacoco coverage
 
       - name: Build and Test
 
@@ -127,7 +133,8 @@ jobs:
 
 
 
-      # 5. Upload test reports
+
+      # 5. Upload test reports even if tests fail
 
       - name: Upload Test Reports
 
@@ -149,7 +156,7 @@ jobs:
 
 
 
-      # 6. OWASP dependency check
+      # 6. OWASP dependency vulnerability scan
 
       - name: OWASP Dependency Check
 
@@ -163,7 +170,7 @@ jobs:
 
 
 
-      # 7. Trivy filesystem scan
+      # 7. Trivy source filesystem scan
 
       - name: Trivy Filesystem Scan
 
@@ -183,7 +190,7 @@ jobs:
 
 
 
-      # 8. Dockerfile security lint
+      # 8. Dockerfile lint/security check
 
       - name: Hadolint Dockerfile Scan
 
@@ -197,21 +204,19 @@ jobs:
 
 
 
-      # 9. Docker image build
+      # 9. Docker image build verification
 
       - name: Docker Build
 
         run: |
 
-          docker build \
-
-          -t tasktracker-ci-test .
+          docker build -t tasktracker-ci-test .
 
 
 
 
 
-      # 10. Docker image scan
+      # 10. Trivy Docker image scan
 
       - name: Trivy Docker Image Scan
 
