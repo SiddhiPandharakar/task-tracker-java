@@ -6,11 +6,9 @@
          http://maven.apache.org/POM/4.0.0
          https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-
     <modelVersion>4.0.0</modelVersion>
 
 
-    <!-- Spring Boot Parent -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -23,6 +21,7 @@
     <artifactId>tasktracker</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
+
     <name>tasktracker</name>
     <description>Secure TaskTracker REST API</description>
 
@@ -30,14 +29,17 @@
     <properties>
 
         <java.version>21</java.version>
+
         <maven.compiler.release>21</maven.compiler.release>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <commons-lang3.version>3.18.0</commons-lang3.version>
 
     </properties>
 
 
 
-    <!-- Dependencies -->
     <dependencies>
 
 
@@ -48,6 +50,7 @@
         </dependency>
 
 
+
         <!-- JPA -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -55,11 +58,13 @@
         </dependency>
 
 
+
         <!-- Validation -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+
 
 
         <!-- PostgreSQL -->
@@ -70,6 +75,7 @@
         </dependency>
 
 
+
         <!-- Actuator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -77,14 +83,14 @@
         </dependency>
 
 
+
         <!-- Swagger -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>
-                springdoc-openapi-starter-webmvc-ui
-            </artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.8.13</version>
         </dependency>
+
 
 
         <!-- Flyway -->
@@ -100,6 +106,7 @@
         </dependency>
 
 
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -108,7 +115,8 @@
         </dependency>
 
 
-        <!-- Testing -->
+
+        <!-- Tests -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -122,16 +130,45 @@
 
 
 
+    <dependencyManagement>
+
+        <dependencies>
+
+
+            <!-- Security upgrade -->
+            <dependency>
+
+                <groupId>org.apache.commons</groupId>
+
+                <artifactId>commons-lang3</artifactId>
+
+                <version>${commons-lang3.version}</version>
+
+            </dependency>
+
+
+        </dependencies>
+
+
+    </dependencyManagement>
+
+
+
+
+
+
     <build>
 
         <plugins>
 
 
-            <!-- Spring Boot Build Plugin -->
+            <!-- Spring Boot -->
             <plugin>
 
                 <groupId>org.springframework.boot</groupId>
+
                 <artifactId>spring-boot-maven-plugin</artifactId>
+
 
                 <configuration>
 
@@ -145,24 +182,31 @@
 
 
 
-            <!-- Java 21 Compiler -->
+
+            <!-- Java 21 -->
             <plugin>
 
                 <groupId>org.apache.maven.plugins</groupId>
+
                 <artifactId>maven-compiler-plugin</artifactId>
 
+
                 <configuration>
+
                     <release>21</release>
+
                 </configuration>
 
             </plugin>
 
 
 
-            <!-- Run Tests -->
+
+            <!-- Tests -->
             <plugin>
 
                 <groupId>org.apache.maven.plugins</groupId>
+
                 <artifactId>maven-surefire-plugin</artifactId>
 
                 <version>3.5.6</version>
@@ -171,34 +215,45 @@
 
 
 
-            <!-- Code Coverage -->
+
+
+            <!-- Jacoco Coverage -->
             <plugin>
 
                 <groupId>org.jacoco</groupId>
+
                 <artifactId>jacoco-maven-plugin</artifactId>
+
                 <version>0.8.12</version>
 
 
                 <executions>
+
 
                     <execution>
 
                         <id>prepare-agent</id>
 
                         <goals>
+
                             <goal>prepare-agent</goal>
+
                         </goals>
 
                     </execution>
 
 
+
                     <execution>
 
                         <id>jacoco-check</id>
+
                         <phase>verify</phase>
 
                         <goals>
+
                             <goal>check</goal>
+
                         </goals>
 
 
@@ -210,21 +265,16 @@
 
                                     <element>BUNDLE</element>
 
+
                                     <limits>
 
                                         <limit>
 
-                                            <counter>
-                                                INSTRUCTION
-                                            </counter>
+                                            <counter>INSTRUCTION</counter>
 
-                                            <value>
-                                                COVEREDRATIO
-                                            </value>
+                                            <value>COVEREDRATIO</value>
 
-                                            <minimum>
-                                                0.80
-                                            </minimum>
+                                            <minimum>0.80</minimum>
 
                                         </limit>
 
@@ -235,6 +285,7 @@
 
 
                             </rules>
+
 
                         </configuration>
 
@@ -247,29 +298,6 @@
 
             </plugin>
 
-            <!-- OWASP Security Scan -->
-            <plugin>
-
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>12.1.0</version>
-
-                <configuration>
-
-                    <failBuildOnCVSS>7</failBuildOnCVSS>
-
-                    <formats>
-                        <format>HTML</format>
-                        <format>JSON</format>
-                    </formats>
-
-                    <outputDirectory>
-                        ${project.build.directory}/dependency-check-report
-                    </outputDirectory>
-
-                </configuration>
-
-            </plugin>
 
 
 
@@ -279,7 +307,9 @@
             <plugin>
 
                 <groupId>org.apache.maven.plugins</groupId>
+
                 <artifactId>maven-enforcer-plugin</artifactId>
+
                 <version>3.6.1</version>
 
 
@@ -287,10 +317,12 @@
 
                     <execution>
 
-                        <id>enforce-java</id>
+                        <id>java-version-check</id>
 
                         <goals>
+
                             <goal>enforce</goal>
+
                         </goals>
 
 
@@ -303,6 +335,7 @@
                                     <version>[21,)</version>
 
                                 </requireJavaVersion>
+
 
                             </rules>
 

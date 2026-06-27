@@ -1,17 +1,30 @@
+# Git
 .git
 .github
-.idea
 
+# IDE
+.idea
+*.iml
+
+# Maven build output
 target
+
+# Logs
 *.log
 
+# Environment secrets
 .env
 .env.*
 
-docker-compose.yml
-
+# Tests
 src/test
 
-*.iml
-
+# Documentation
 README.md
+
+# Docker local files
+docker-compose.yml
+
+# OS files
+.DS_Store
+Thumbs.db
