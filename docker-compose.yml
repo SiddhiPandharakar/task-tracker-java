@@ -1,7 +1,10 @@
+version: "3.9"
+
 services:
 
   db:
     image: postgres:16
+
     container_name: tasktracker-postgres
 
     environment:
@@ -16,15 +19,18 @@ services:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U postgres"
+          "pg_isready -U postgres -d tasktracker"
         ]
       interval: 10s
       timeout: 5s
       retries: 5
 
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+
 
   app:
-
     image: tasktracker:v10
 
     container_name: tasktracker-app
@@ -33,17 +39,18 @@ services:
       db:
         condition: service_healthy
 
-
     ports:
       - "8000:8080"
 
-
     environment:
-
       SERVER_PORT: 8080
 
       DB_URL: jdbc:postgresql://db:5432/tasktracker
-
       DB_USERNAME: postgres
-
       DB_PASSWORD: root
+
+
+
+volumes:
+
+  postgres-data:

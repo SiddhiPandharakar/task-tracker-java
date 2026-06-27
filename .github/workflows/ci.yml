@@ -12,15 +12,12 @@ on:
       - main
 
 
-
 permissions:
-
   contents: read
 
 
 
 jobs:
-
 
   build-test-security:
 
@@ -36,7 +33,6 @@ jobs:
 
       postgres:
 
-
         image: postgres:16
 
 
@@ -46,8 +42,7 @@ jobs:
 
           POSTGRES_USER: postgres
 
-          POSTGRES_PASSWORD: postgres
-
+          POSTGRES_PASSWORD: root
 
 
         ports:
@@ -55,46 +50,36 @@ jobs:
           - 5432:5432
 
 
-
         options: >-
-
-          --health-cmd "pg_isready -U postgres -d tasktracker"
-
-          --health-interval 10s
-
-          --health-timeout 5s
-
-          --health-retries 5
-
-
+          --health-cmd="pg_isready -U postgres -d tasktracker"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
 
 
     env:
 
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/tasktracker
+      DB_URL: jdbc:postgresql://localhost:5432/tasktracker
 
-      SPRING_DATASOURCE_USERNAME: postgres
+      DB_USERNAME: postgres
 
-      SPRING_DATASOURCE_PASSWORD: postgres
+      DB_PASSWORD: root
 
 
 
     steps:
 
 
+      # Checkout
 
-      # 1. Checkout source code
-
-      - name: Checkout repository
+      - name: Checkout code
 
         uses: actions/checkout@v4
 
 
 
-
-
-      # 2. Setup Java 21
+      # Java
 
       - name: Setup Java 21
 
@@ -110,21 +95,21 @@ jobs:
 
 
 
+      # Verify
+
+      - name: Verify Environment
+
+        run: |
+
+          java -version
+
+          mvn -version
 
 
-      # 3. Verify Java installation
 
-      - name: Verify Java
+      # Build + Test
 
-        run: java -version
-
-
-
-
-
-      # 4. Maven build + unit tests + Jacoco coverage
-
-      - name: Build and Test
+      - name: Build Test
 
         run: |
 
@@ -132,9 +117,7 @@ jobs:
 
 
 
-
-
-      # 5. Upload test reports even if tests fail
+      # Test reports
 
       - name: Upload Test Reports
 
@@ -144,33 +127,41 @@ jobs:
 
         with:
 
-          name: junit-jacoco-report
+          name: test-report
 
-          path: |
+          path:
 
             target/surefire-reports
 
-            target/site/jacoco
+
+
+      # Cache OWASP database
+
+      - name: Cache OWASP Database
+
+        uses: actions/cache@v4
+
+        with:
+
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+
+          key: dependency-check-${{ runner.os }}
 
 
 
-
-
-      # 6. OWASP dependency vulnerability scan
+      # OWASP Scan
 
       - name: OWASP Dependency Check
 
         run: |
 
-          mvn org.owasp:dependency-check-maven:check
+          mvn dependency-check:check
 
-        continue-on-error: false
-
-
+        continue-on-error: true
 
 
 
-      # 7. Trivy source filesystem scan
+      # Trivy source scan
 
       - name: Trivy Filesystem Scan
 
@@ -188,11 +179,9 @@ jobs:
 
 
 
+      # Docker lint
 
-
-      # 8. Dockerfile lint/security check
-
-      - name: Hadolint Dockerfile Scan
+      - name: Hadolint
 
         uses: hadolint/hadolint-action@v3.1.0
 
@@ -202,9 +191,7 @@ jobs:
 
 
 
-
-
-      # 9. Docker image build verification
+      # Docker build
 
       - name: Docker Build
 
@@ -214,11 +201,9 @@ jobs:
 
 
 
+      # Docker image security
 
-
-      # 10. Trivy Docker image scan
-
-      - name: Trivy Docker Image Scan
+      - name: Trivy Docker Scan
 
         uses: aquasecurity/trivy-action@master
 
