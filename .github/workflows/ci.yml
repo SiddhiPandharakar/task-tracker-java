@@ -135,32 +135,6 @@ jobs:
 
 
 
-      # Cache OWASP database
-
-      - name: Cache OWASP Database
-
-        uses: actions/cache@v4
-
-        with:
-
-          path: ~/.m2/repository/org/owasp/dependency-check-data
-
-          key: dependency-check-${{ runner.os }}
-
-
-
-      # OWASP Scan
-
-      - name: OWASP Dependency Check
-
-        run: |
-
-          mvn dependency-check:check
-
-        continue-on-error: true
-
-
-
       # Trivy source scan
 
       - name: Trivy Filesystem Scan
@@ -201,7 +175,7 @@ jobs:
 
 
 
-      # Docker image security
+      # Trivy Docker image scan
 
       - name: Trivy Docker Scan
 
