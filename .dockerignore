@@ -1,0 +1,38 @@
+# Git
+.git
+.github
+
+
+# IDE
+.idea
+*.iml
+
+
+# Maven
+target
+
+
+# Logs
+*.log
+
+
+# Environment
+.env
+.env.*
+
+
+# Tests
+src/test
+
+
+# Documentation
+README.md
+
+
+# Docker
+docker-compose.yml
+
+
+# OS
+.DS_Store
+Thumbs.db
